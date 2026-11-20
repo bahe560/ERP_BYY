@@ -1,2 +1,2 @@
-# ERP_BYY
+# BYY_Claude
 Enterprise Resource Planning BYY
