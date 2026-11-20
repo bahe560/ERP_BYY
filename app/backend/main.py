@@ -6,6 +6,7 @@ load_dotenv(Path(__file__).resolve().parents[1] / ".env")
 
 from fastapi import FastAPI, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
 from backend.db import get_connection, db_transaction
@@ -35,7 +36,6 @@ def login(data: LoginRequest):
                 row = conn.execute("SELECT erp.authenticate(%s, %s, %s) AS user_id", (data.username, data.password, None)).fetchone()
                 user_id = row["user_id"]
     except Exception as exc:
-        # Do not leak database internals to clients.
         raise HTTPException(status_code=503, detail="Authentication service unavailable") from exc
     if not user_id:
         raise HTTPException(status_code=401, detail="اسم المستخدم أو كلمة المرور غير صحيحة، أو الحساب غير متاح")
@@ -54,8 +54,6 @@ def me(user_id: int = Depends(current_user)):
 
 @app.get("/api/dashboard/summary")
 def dashboard(user_id: int = Depends(current_user)):
-    # First iteration intentionally reports connection and user context only.
-    # Accounting KPIs will be connected after company and fiscal-period selection are implemented.
     with db_transaction(user_id) as conn:
         conn.execute("SELECT erp.current_user_id()")
     return {"message": "ERP application foundation is running", "user_id": user_id, "modules": ["accounting", "vouchers", "banking", "reports"]}
@@ -64,10 +62,12 @@ def dashboard(user_id: int = Depends(current_user)):
 def accounts(user_id: int = Depends(current_user), company_id: int | None = None):
     if company_id is None:
         raise HTTPException(status_code=400, detail="company_id is required")
-    # Company schema is being verified before exposing account data.
     with db_transaction(user_id) as conn:
         exists = conn.execute("SELECT 1 FROM erp.companies WHERE id=%s", (company_id,)).fetchone()
         if not exists:
             raise HTTPException(status_code=404, detail="Company not found")
         rows = conn.execute("SELECT id, code, name, category, nature, is_active FROM erp.accounts WHERE company_id=%s ORDER BY code LIMIT 500", (company_id,)).fetchall()
     return rows
+
+# Serve the initial Arabic web interface at the root URL after API routes.
+app.mount("/", StaticFiles(directory=Path(__file__).resolve().parents[1] / "frontend", html=True), name="frontend")
