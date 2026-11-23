@@ -16,6 +16,7 @@
 - [سجل الأدلة والمصادر (Evidence Registry)](evidence-registry.md)
 - [سجل ربط الأدلة بالوظائف والشاشات](evidence-function-screen-mapping.md)
 - [المراجعة التفصيلية: متغيرات نظام العملاء](screens/ONX-SCR-CUS-001.md)
+- [المراجعة التفصيلية: حجز كميات الأصناف](screens/ONX-SCR-INV-001.md)
 
 ## قاعدة إدارة الوثائق
 
