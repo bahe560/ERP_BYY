@@ -13,6 +13,7 @@
 - [الحالة الحالية ونقطة الاستمرار](project-status.md)
 - [حوكمة المشروع ومنهجية العمل](governance.md)
 - [سجل القرارات](decision-log.md)
+- [سجل الأدلة والمصادر (Evidence Registry)](evidence-registry.md)
 
 ## قاعدة إدارة الوثائق
 
