@@ -14,6 +14,7 @@
 - [حوكمة المشروع ومنهجية العمل](governance.md)
 - [سجل القرارات](decision-log.md)
 - [سجل الأدلة والمصادر (Evidence Registry)](evidence-registry.md)
+- [سجل ربط الأدلة بالوظائف والشاشات](evidence-function-screen-mapping.md)
 
 ## قاعدة إدارة الوثائق
 
